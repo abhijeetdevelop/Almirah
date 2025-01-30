@@ -1,11 +1,12 @@
-﻿namespace Almirah;
+﻿using Almirah.Views;
+
+namespace Almirah;
 
 public partial class App : Application
 {
-	public App()
-	{
-		InitializeComponent();
-
-		MainPage = new AppShell();
-	}
+    public App(AppShell shell)
+    {
+        InitializeComponent();
+        MainPage = shell; // Set AppShell as the main page
+    }
 }

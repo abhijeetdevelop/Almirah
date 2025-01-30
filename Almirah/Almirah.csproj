@@ -1,12 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0-maccatalyst</TargetFramework>
         <SingleProject>true</SingleProject>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>Almirah</RootNamespace>
         <UseMaui>true</UseMaui>
         <Nullable>enable</Nullable>
+        <LangVersion>latestmajor</LangVersion>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <Optimize>true</Optimize>
+      <DebugType>full</DebugType>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,17 +29,29 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
+        <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1"/>
+        <PackageReference Include="Microsoft.Maui.Controls.Core" Version="$(MauiVersion)" />
+        <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Helpers\" />
-      <Folder Include="Models\" />
-      <Folder Include="Services\" />
-      <Folder Include="ViewModels\" />
-      <Folder Include="Views\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <MauiXaml Update="Views\MainPage.xaml">
+        <SubType>Designer</SubType>
+      </MauiXaml>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\MainPage.xaml.cs">
+        <DependentUpon>MainPage.xaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 
 </Project>

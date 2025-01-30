@@ -1,13 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0-maccatalyst</TargetFramework>
-		<SupportedOSPlatformVersion>13.1</SupportedOSPlatformVersion>
+		<TargetFramework>net9.0-maccatalyst</TargetFramework>
+		<SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>Almirah</RootNamespace>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseMaui>true</UseMaui>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+	  <MtouchDebug>true</MtouchDebug>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -19,5 +23,10 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Almirah\Almirah.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="LaunchScreen.xib" />
+	</ItemGroup>
+
 
 </Project>

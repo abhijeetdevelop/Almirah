@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Almirah.Views.MainPage"
+             Title="File System">
+
+    <ContentPage.Content>
+        <StackLayout>
+            <!-- List of folders and files -->
+            <CollectionView 
+                ItemsSource="{Binding Files}" 
+                SelectionMode="Single">
+                
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- File/folder name -->
+                            <Label Grid.Column="0" Text="{Binding Name}" VerticalOptions="Center" />
+
+                            <!-- Swipe actions for copy/paste -->
+                            <SwipeView Grid.Column="1" >
+                                <SwipeView.LeftItems>
+                                    <SwipeItems>
+                                        <SwipeItem 
+                                            Text="Copy" 
+                                            BackgroundColor="LightBlue"
+                                            Command="{Binding BindingContext.CopyCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}" 
+                                            CommandParameter="{Binding .}" />
+                                    </SwipeItems>
+                                </SwipeView.LeftItems>
+
+                                <SwipeView.RightItems>
+                                    <SwipeItems>
+                                        <SwipeItem 
+                                            Text="Paste" 
+                                            BackgroundColor="LightGreen"
+                                            Command="{Binding BindingContext.PasteCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}" 
+                                            CommandParameter="{Binding .}" />
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+                            </SwipeView>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
