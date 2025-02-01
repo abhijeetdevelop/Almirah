@@ -40,26 +40,30 @@ public class MainPageVM : BindableObject
     {
         _storageService = storageService;
         _fileSystemService = fileSystemService;
-        
+
         Files = new ObservableCollection<FileItem>();
         
         CopyCommand = new Command<FileItem>(OnCopy);
         PasteCommand = new Command<FileItem>(OnPaste);
-
-        // Load files/folders on initialization
-        LoadFiles();
     }
 
     // Load files from storage
     private async Task LoadFiles()
     {
-        var files = await _storageService.GetFilesAsync();
+        //var files = await _storageService.GetFilesAsync();
         Files.Clear();
         
         Files.Add(new FileItem { Name = "A" });
         Files.Add(new FileItem { Name = "B" });
         Files.Add(new FileItem { Name = "C" });
-        foreach (var file in files) Files.Add(file);
+        
+        // foreach (var file in files) 
+        //     Files.Add(file);
+    }
+    
+    public async Task OnAppearing()
+    {
+        await LoadFiles();
     }
 
     // Handle copy operation
@@ -72,13 +76,11 @@ public class MainPageVM : BindableObject
     // Handle paste operation
     private async void OnPaste(FileItem file)
     {
-        if (SelectedFile != new FileItem())
-        {
-            // Perform copy-paste operation
-            bool result = await _fileSystemService.CopyFileAsync(SelectedFile, file);
-            if (result)
-                // Optionally refresh the files
-                LoadFiles();
-        }
+        if (SelectedFile == new FileItem()) return;
+        // Perform copy-paste operation
+        var result = await _fileSystemService.CopyFileAsync(SelectedFile, file);
+        if (result)
+            // Optionally refresh the files
+            await LoadFiles();
     }
 }

@@ -1,6 +1,4 @@
-﻿using Almirah.Views;
-
-namespace Almirah;
+﻿namespace Almirah;
 
 public partial class App : Application
 {

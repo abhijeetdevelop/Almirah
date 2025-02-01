@@ -6,8 +6,8 @@ namespace Almirah.Services;
 
 public class StorageService : IStorageService
 {
-    private readonly string _connectionString = "<Your Azure Connection String>";
-    private readonly string _containerName = "<Your Container Name>";
+    private readonly string _connectionString = "";
+    private readonly string _containerName = "";
 
     public async Task<List<FileItem>> GetFilesAsync()
     {

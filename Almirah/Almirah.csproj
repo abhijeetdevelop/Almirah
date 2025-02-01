@@ -12,8 +12,8 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <Optimize>true</Optimize>
-      <DebugType>full</DebugType>
+        <Optimize>false</Optimize> <!-- Disable optimization for debugging -->
+        <DebugType>full</DebugType> <!-- Ensure full debug symbols are available -->
     </PropertyGroup>
 
     <ItemGroup>
@@ -38,20 +38,20 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Helpers\" />
+        <Folder Include="Helpers\" />
     </ItemGroup>
 
     <ItemGroup>
-      <MauiXaml Update="Views\MainPage.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
+        <MauiXaml Update="Views\MainPage.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\MainPage.xaml.cs">
-        <DependentUpon>MainPage.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
+        <Compile Update="Views\MainPage.xaml.cs">
+            <DependentUpon>MainPage.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 
 </Project>
