@@ -1,4 +1,6 @@
-﻿namespace Almirah.Mac;
+﻿using Microsoft.Maui.Hosting;
+
+namespace Almirah.Mac;
 
 public static class MauiProgram
 {
@@ -6,8 +8,7 @@ public static class MauiProgram
 	{
 		var builder = MauiApp.CreateBuilder();
 
-		builder
-			.UseSharedMauiApp();
+		builder.UseSharedMauiApp();
 
 		return builder.Build();
 	}

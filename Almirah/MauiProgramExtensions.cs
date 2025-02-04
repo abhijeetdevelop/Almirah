@@ -1,42 +1,48 @@
-﻿using Almirah.Services;
+﻿using System.IO;
+using Almirah.Models;
 using Almirah.Services.Interfaces;
 using Almirah.ViewModels;
+using Almirah.ViewModels.Notes;
 using Almirah.Views;
-using Microsoft.Extensions.Logging;
+using Almirah.Views.Notes;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Hosting;
+using Microsoft.Maui.Storage;
 
 namespace Almirah;
 
 public static class MauiProgramExtensions
 {
-	public static MauiAppBuilder UseSharedMauiApp(this MauiAppBuilder builder)
-	{
-		builder.Services.AddSingleton<App>();
-		builder
-			.UseMauiApp<App>()
-			.ConfigureFonts(fonts =>
-			{
-				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-			});
+    public static MauiAppBuilder UseSharedMauiApp(this MauiAppBuilder builder)
+    {
+        builder.Services.AddSingleton<App>();
+        builder
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
 
-		builder.Services.AddSingleton<AppShell>();
+        builder.Services.AddSingleton<AppShell>();
 
-		// Register services
-		builder.Services.AddSingleton<IStorageService, StorageService>();
-		builder.Services.AddSingleton<IFileSystemService, FileSystemService>();
+        builder.Services.AddTransient<Note>();
 
-		// Register ViewModels
-		builder.Services.AddSingleton<MainPageVM>();
-		builder.Services.AddSingleton<FolderPageVM>();
+        // Register services
+        builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
+        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "notes.db3");
+        builder.Services.AddSingleton<IDatabaseService>(s => new DatabaseService(dbPath));
 
-		// Register Views
-		builder.Services.AddSingleton<MainPage>();
-		builder.Services.AddSingleton<FolderPage>();
-        
-#if DEBUG
-		builder.Logging.AddDebug();
-#endif
+        // Register ViewModels
+        builder.Services.AddSingleton<MainPageVM>();
+        builder.Services.AddSingleton<ViewVM>();
 
-		return builder;
-	}
+        // Register Views
+        builder.Services.AddSingleton<MainPage>();
+        builder.Services.AddSingleton<ViewPage>();
+        builder.Services.AddSingleton<App>();
+
+        return builder;
+    }
 }

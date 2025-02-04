@@ -1,4 +1,6 @@
-﻿using Almirah.ViewModels;
+﻿using System;
+using Almirah.ViewModels;
+using Microsoft.Maui.Controls;
 
 namespace Almirah.Views;
 
@@ -15,7 +17,7 @@ public partial class MainPage : ContentPage
         {
             Console.WriteLine($"Exception: {ex.Message}");
             throw;
-        }
+        }   
     }
     
     protected override async void OnAppearing()

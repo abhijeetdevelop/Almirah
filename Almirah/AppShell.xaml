@@ -5,12 +5,12 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:Almirah.Views"
-    Shell.FlyoutBehavior="Flyout"
-    Title="Almirah">
+    xmlns:notes="clr-namespace:Almirah.Views.Notes"
+    Shell.FlyoutBehavior="Disabled">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate views:MainPage}"
-        Route="MainPage" />
-
-</Shell>
+    <TabBar>
+    <ShellContent Route="MainPage" ContentTemplate="{DataTemplate views:MainPage}" />
+    
+    <ShellContent Route="ViewPage" ContentTemplate="{DataTemplate notes:ViewPage}" />
+    </TabBar>
+</Shell>    

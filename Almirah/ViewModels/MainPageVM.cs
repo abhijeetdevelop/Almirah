@@ -1,86 +1,87 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Almirah.Models;
 using Almirah.Services.Interfaces;
+using Almirah.Views.Notes;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 
 namespace Almirah.ViewModels;
 
 public class MainPageVM : BindableObject
 {
-    private readonly IStorageService _storageService;
-    private readonly IFileSystemService _fileSystemService;
-    
-    private FileItem _selectedFile;
-    private ObservableCollection<FileItem> _files;
-    
-    public ICommand CopyCommand { get; }
-    public ICommand PasteCommand { get; }
-    public ObservableCollection<FileItem> Files
+    private readonly IDatabaseService _databaseService;
+    public ObservableCollection<Note> Notes { get; } = new();
+
+    private Note _selectedNote;
+    public Note SelectedNote
     {
-        get => _files;
+        get => _selectedNote;
         set
         {
-            _files = value;
+            _selectedNote = value;
             OnPropertyChanged();
+            
+            if (_selectedNote != null)
+            {
+                OpenNoteAsync(_selectedNote);
+            }
         }
     }
-    
-    // Holds the currently selected file/folder for copy-paste
-    public FileItem SelectedFile
+    public IAsyncRelayCommand LoadNotesCommand { get; }
+    public IAsyncRelayCommand AddNoteCommand { get; }
+    public IAsyncRelayCommand<Note> DeleteNoteCommand { get; }
+
+
+    public MainPageVM(IDatabaseService _databaseService)
     {
-        get => _selectedFile;
-        set
+        this._databaseService = _databaseService;
+        LoadNotesCommand = new AsyncRelayCommand(LoadNotesAsync);
+        DeleteNoteCommand = new AsyncRelayCommand<Note>(DeleteNoteAsync);
+        AddNoteCommand = new AsyncRelayCommand(AddNoteAsync);
+    }
+    
+    private async Task OpenNoteAsync(Note selectedNote)
+    {
+        // Navigate to ViewPage with the selected note
+        await Shell.Current.GoToAsync($"//{nameof(ViewPage)}", new Dictionary<string, object>
         {
-            _selectedFile = value;
-            OnPropertyChanged();
+            ["note"] = selectedNote
+        });
+    }
+
+    private async Task AddNoteAsync()
+    {
+        // Navigate to the NoteDetailPage with a new note
+        var newNote = new Note();
+        await Shell.Current.GoToAsync($"//{nameof(ViewPage)}", new Dictionary<string, object>
+        {
+            ["note"] = newNote
+        });
+    }
+
+    private async Task LoadNotesAsync()
+    {
+        var notes = await _databaseService.GetNotesAsync();
+        Notes.Clear();
+        foreach (var note in notes)
+        {
+            Notes.Add(note);
         }
     }
 
-    public MainPageVM(IStorageService storageService, IFileSystemService fileSystemService)
+    private async Task DeleteNoteAsync(Note note)
     {
-        _storageService = storageService;
-        _fileSystemService = fileSystemService;
-
-        Files = new ObservableCollection<FileItem>();
-        
-        CopyCommand = new Command<FileItem>(OnCopy);
-        PasteCommand = new Command<FileItem>(OnPaste);
+        await _databaseService.DeleteNoteAsync(note.Id);
+        await LoadNotesAsync();
     }
 
-    // Load files from storage
-    private async Task LoadFiles()
-    {
-        //var files = await _storageService.GetFilesAsync();
-        Files.Clear();
-        
-        Files.Add(new FileItem { Name = "A" });
-        Files.Add(new FileItem { Name = "B" });
-        Files.Add(new FileItem { Name = "C" });
-        
-        // foreach (var file in files) 
-        //     Files.Add(file);
-    }
-    
     public async Task OnAppearing()
     {
-        await LoadFiles();
-    }
-
-    // Handle copy operation
-    private void OnCopy(FileItem file)
-    {
-        // Cache the selected file for paste operation
-        SelectedFile = file;
-    }
-
-    // Handle paste operation
-    private async void OnPaste(FileItem file)
-    {
-        if (SelectedFile == new FileItem()) return;
-        // Perform copy-paste operation
-        var result = await _fileSystemService.CopyFileAsync(SelectedFile, file);
-        if (result)
-            // Optionally refresh the files
-            await LoadFiles();
+        await LoadNotesAsync(); // Ensure notes are loaded when the page appears
     }
 }

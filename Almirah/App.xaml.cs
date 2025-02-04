@@ -1,4 +1,7 @@
-﻿namespace Almirah;
+﻿using Microsoft.Maui;
+using Microsoft.Maui.Controls;
+
+namespace Almirah;
 
 public partial class App : Application
 {

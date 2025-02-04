@@ -1,7 +1,11 @@
-using Almirah.Services;
 using Almirah.Services.Interfaces;
 using Almirah.ViewModels;
+using Almirah.ViewModels.Notes;
 using Almirah.Views;
+using Almirah.Views.Notes;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Hosting;
 
 namespace Almirah;
 
@@ -19,20 +23,8 @@ public static class MauiProgram
             });
 
         builder.Services.AddSingleton<AppShell>();
-
-        // Register services
-        builder.Services.AddSingleton<IStorageService, StorageService>();
-        builder.Services.AddSingleton<IFileSystemService, FileSystemService>();
-
-        // Register ViewModels
-        builder.Services.AddSingleton<MainPageVM>();
-        builder.Services.AddSingleton<FolderPageVM>();
-
-        // Register Views
-        builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<App>();
-        builder.Services.AddSingleton<FolderPage>();
-        
+
         return builder.Build();
     }
 }
