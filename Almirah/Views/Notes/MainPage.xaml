@@ -1,0 +1,42 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewModels="clr-namespace:Almirah.ViewModels.Notes"
+             x:Class="Almirah.Views.Notes.MainPage"
+             Title="Note$">
+
+    <StackLayout Padding="20">
+        <Button Text="Add Note" Command="{Binding AddNoteCommand}" HorizontalOptions="Center" />
+        <ListView ItemsSource="{Binding Notes}" SelectedItem="{Binding SelectedNote}" HasUnevenRows="True">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="10" RowSpacing="5">
+                            <!-- Title and last update date -->
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Show the title -->
+                            <Label Text="{Binding Title}" FontSize="Medium" Grid.Row="0" />
+
+                            <!-- Show the last updated date -->
+                            <Label Text="{Binding UpdatedAt, StringFormat='Last updated: {0:g}'}" FontSize="Small" Grid.Row="1" />
+
+                            <!-- Add the delete button on the right -->
+                            <Button Text="Delete"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:MainPageVM}}, 
+                                    Path=DeleteNoteCommand}"
+                                    CommandParameter="{Binding .}"
+                                    HorizontalOptions="End" 
+                                    VerticalOptions="Center" 
+                                    Grid.RowSpan="2" />
+
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+    </StackLayout>
+</ContentPage>

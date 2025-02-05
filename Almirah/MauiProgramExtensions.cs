@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
 using Microsoft.Maui.Storage;
+using MainPage = Almirah.Views.Notes.MainPage;
 
 namespace Almirah;
 
@@ -32,6 +33,7 @@ public static class MauiProgramExtensions
         // Register services
         builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
         var dbPath = Path.Combine(FileSystem.AppDataDirectory, "notes.db3");
+
         builder.Services.AddSingleton<IDatabaseService>(s => new DatabaseService(dbPath));
 
         // Register ViewModels

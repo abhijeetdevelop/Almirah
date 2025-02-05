@@ -1,8 +1,11 @@
 ﻿using System;
-using Almirah.ViewModels;
+using System.Threading.Tasks;
+using Almirah.ViewModels.Notes;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui;
+using Microsoft.Maui.Authentication;
 
-namespace Almirah.Views;
+namespace Almirah.Views.Notes;
 
 public partial class MainPage : ContentPage
 {

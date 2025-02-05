@@ -1,23 +1,20 @@
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using Almirah.Models;
 using Almirah.Services.Interfaces;
 using Almirah.Views.Notes;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Storage;
 
-namespace Almirah.ViewModels;
+namespace Almirah.ViewModels.Notes;
 
 public class MainPageVM : BindableObject
 {
     private readonly IDatabaseService _databaseService;
+    private readonly IAuthService _authService;
+
     public ObservableCollection<Note> Notes { get; } = new();
 
     private Note _selectedNote;
+
     public Note SelectedNote
     {
         get => _selectedNote;
@@ -25,28 +22,41 @@ public class MainPageVM : BindableObject
         {
             _selectedNote = value;
             OnPropertyChanged();
-            
-            if (_selectedNote != null)
-            {
-                OpenNoteAsync(_selectedNote);
-            }
+
+            if (_selectedNote != null) OpenNoteAsync(_selectedNote);
         }
     }
+
     public IAsyncRelayCommand LoadNotesCommand { get; }
     public IAsyncRelayCommand AddNoteCommand { get; }
-    public IAsyncRelayCommand<Note> DeleteNoteCommand { get; }
+    public IAsyncRelayCommand DeleteNoteCommand { get; }
 
-
-    public MainPageVM(IDatabaseService _databaseService)
+    public MainPageVM(IDatabaseService databaseService, IAuthService authService)
     {
-        this._databaseService = _databaseService;
+        _databaseService = databaseService;
+        _authService = authService;
+
         LoadNotesCommand = new AsyncRelayCommand(LoadNotesAsync);
         DeleteNoteCommand = new AsyncRelayCommand<Note>(DeleteNoteAsync);
         AddNoteCommand = new AsyncRelayCommand(AddNoteAsync);
     }
-    
+
+    private async Task AuthenticateUser()
+    {
+        var isAuthenticated = await _authService.AuthenticateAsync();
+
+        if (isAuthenticated)
+            // Proceed to the main content of the app
+            Console.WriteLine("User authenticated successfully!");
+        else
+            // Handle the case where authentication failed
+            Console.WriteLine("Authentication failed.");
+    }
+
     private async Task OpenNoteAsync(Note selectedNote)
     {
+        if (selectedNote == null) return; // Add null check for safety
+
         // Navigate to ViewPage with the selected note
         await Shell.Current.GoToAsync($"//{nameof(ViewPage)}", new Dictionary<string, object>
         {
@@ -68,20 +78,18 @@ public class MainPageVM : BindableObject
     {
         var notes = await _databaseService.GetNotesAsync();
         Notes.Clear();
-        foreach (var note in notes)
-        {
-            Notes.Add(note);
-        }
+        foreach (var note in notes) Notes.Add(note);
     }
 
     private async Task DeleteNoteAsync(Note note)
-    {
-        await _databaseService.DeleteNoteAsync(note.Id);
+    {   
+        await _databaseService.DeleteNoteAsync(note);
         await LoadNotesAsync();
     }
 
     public async Task OnAppearing()
     {
-        await LoadNotesAsync(); // Ensure notes are loaded when the page appears
+        //await AuthenticateUser();
+        await LoadNotesAsync(); 
     }
 }

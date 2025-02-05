@@ -29,5 +29,8 @@
 	  <None Remove="LaunchScreen.xib" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <BundleResource Include="Resources\app_icon.icns" />
+	</ItemGroup>
 
 </Project>

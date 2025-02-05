@@ -42,8 +42,8 @@ public class DatabaseService : IDatabaseService
         }
     }
 
-    public Task<int> DeleteNoteAsync(int id)
+    public Task<int> DeleteNoteAsync(Note note)
     {
-        return _database.DeleteAsync(id);
+        return _database.DeleteAsync(note);
     }
 }
