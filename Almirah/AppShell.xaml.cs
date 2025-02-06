@@ -1,6 +1,4 @@
-﻿using Microsoft.Maui.Controls;
-
-namespace Almirah;
+﻿namespace Almirah;
 
 public partial class AppShell : Shell
 {

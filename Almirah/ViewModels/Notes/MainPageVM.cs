@@ -13,6 +13,7 @@ public class MainPageVM : BindableObject
 
     public ObservableCollection<Note> Notes { get; } = new();
 
+
     private Note _selectedNote;
 
     public Note SelectedNote
@@ -24,6 +25,31 @@ public class MainPageVM : BindableObject
             OnPropertyChanged();
 
             if (_selectedNote != null) OpenNoteAsync(_selectedNote);
+        }
+    }
+
+    private ObservableCollection<Note> _filteredNotes;
+
+    public ObservableCollection<Note> FilteredNotes
+    {
+        get => _filteredNotes;
+        set
+        {
+            _filteredNotes = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private string _searchText;
+
+    public string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            _searchText = value;
+            OnPropertyChanged();
+            SearchNotes();
         }
     }
 
@@ -39,6 +65,23 @@ public class MainPageVM : BindableObject
         LoadNotesCommand = new AsyncRelayCommand(LoadNotesAsync);
         DeleteNoteCommand = new AsyncRelayCommand<Note>(DeleteNoteAsync);
         AddNoteCommand = new AsyncRelayCommand(AddNoteAsync);
+    }
+
+    private void SearchNotes()
+    {
+        if (string.IsNullOrWhiteSpace(SearchText))
+        {
+            // If no search text, show all notes
+            FilteredNotes = new ObservableCollection<Note>(Notes);
+        }
+        else
+        {
+            // Filter notes based on the search text
+            var filtered = Notes.Where(n => n.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
+                                            || n.Content.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            FilteredNotes = new ObservableCollection<Note>(filtered);
+        }
     }
 
     private async Task AuthenticateUser()
@@ -79,17 +122,19 @@ public class MainPageVM : BindableObject
         var notes = await _databaseService.GetNotesAsync();
         Notes.Clear();
         foreach (var note in notes) Notes.Add(note);
+
+        FilteredNotes = new ObservableCollection<Note>(notes);
     }
 
     private async Task DeleteNoteAsync(Note note)
-    {   
+    {
         await _databaseService.DeleteNoteAsync(note);
         await LoadNotesAsync();
     }
 
     public async Task OnAppearing()
     {
-        //await AuthenticateUser();
-        await LoadNotesAsync(); 
+        await AuthenticateUser();
+        await LoadNotesAsync();
     }
 }

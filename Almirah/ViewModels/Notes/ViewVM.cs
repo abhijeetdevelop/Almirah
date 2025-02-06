@@ -1,17 +1,15 @@
-using System;
-using System.Threading.Tasks;
 using Almirah.Models;
 using Almirah.Services.Interfaces;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
 
 namespace Almirah.ViewModels.Notes;
 
 public class ViewVM : BindableObject
 {
     private readonly IDatabaseService _databaseService;
-    
+
     private bool _isNoteNew;
+
     public bool IsNoteNew
     {
         get => _isNoteNew;
@@ -23,13 +21,14 @@ public class ViewVM : BindableObject
     }
 
     private Note _selectedNote;
+
     public Note SelectedNote
     {
         get => _selectedNote;
         set
         {
             _selectedNote = value;
-            
+
             IsNoteNew = _selectedNote?.Id == 0;
             OnPropertyChanged();
         }

@@ -1,14 +1,7 @@
-﻿using System.IO;
-using Almirah.Models;
+﻿using Almirah.Models;
 using Almirah.Services.Interfaces;
-using Almirah.ViewModels;
 using Almirah.ViewModels.Notes;
-using Almirah.Views;
 using Almirah.Views.Notes;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui.Controls.Hosting;
-using Microsoft.Maui.Hosting;
-using Microsoft.Maui.Storage;
 using MainPage = Almirah.Views.Notes.MainPage;
 
 namespace Almirah;

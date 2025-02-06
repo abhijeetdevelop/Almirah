@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Almirah.Services.Interfaces;
 using Foundation;
 using LocalAuthentication;
@@ -22,18 +20,19 @@ public class AuthService : IAuthService
             // We need to call EvaluatePolicy asynchronously and handle the result in a completion handler
             var tcs = new TaskCompletionSource<bool>();
 
-            context.EvaluatePolicy(LAPolicy.DeviceOwnerAuthenticationWithBiometrics, reason, (success, evaluationError) =>
-            {
-                if (success)
+            context.EvaluatePolicy(LAPolicy.DeviceOwnerAuthenticationWithBiometrics, reason,
+                (success, evaluationError) =>
                 {
-                    tcs.SetResult(true);  // Authentication succeeded
-                }
-                else
-                {
-                    tcs.SetResult(false); // Authentication failed
-                    Console.WriteLine($"Authentication failed: {evaluationError?.LocalizedDescription}");
-                }
-            });
+                    if (success)
+                    {
+                        tcs.SetResult(true); // Authentication succeeded
+                    }
+                    else
+                    {
+                        tcs.SetResult(false); // Authentication failed
+                        Console.WriteLine($"Authentication failed: {evaluationError?.LocalizedDescription}");
+                    }
+                });
 
             // Await the result of the TaskCompletionSource
             return await tcs.Task;

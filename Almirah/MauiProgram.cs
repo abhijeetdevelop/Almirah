@@ -1,12 +1,3 @@
-using Almirah.Services.Interfaces;
-using Almirah.ViewModels;
-using Almirah.ViewModels.Notes;
-using Almirah.Views;
-using Almirah.Views.Notes;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui.Controls.Hosting;
-using Microsoft.Maui.Hosting;
-
 namespace Almirah;
 
 public static class MauiProgram

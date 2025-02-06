@@ -1,4 +1,3 @@
-using System;
 using System.Security.Cryptography;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -13,34 +12,44 @@ public partial class Note : ObservableObject
     [ObservableProperty] private string _title;
     [ObservableProperty] private string _encryptedContent;
 
+    [ObservableProperty] private DateTime _createdAt = DateTime.UtcNow;
+    [ObservableProperty] private DateTime _updatedAt = DateTime.UtcNow;
+
     public string Content
     {
         get => Decrypt(_encryptedContent);
-        set => _encryptedContent = Encrypt(value);
+        set
+        {
+            _encryptedContent = Encrypt(value);
+            OnPropertyChanged();
+        }
     }
 
-    private static readonly byte[] Key = Encoding.UTF8.GetBytes("YourFixedSecretKey12345678901234"); // Check if exactly 32 bytes
+    private static readonly byte[]
+        Key = Encoding.UTF8.GetBytes("YourFixedSecretKey12345678901234"); // Check if exactly 32 bytes
+
     private static readonly byte[] IV = Encoding.UTF8.GetBytes("YourIV1234567890"); // 16 bytes for AES IV.
-    
+
     private string Encrypt(string plainText)
     {
-        if (string.IsNullOrEmpty(plainText)) return string.Empty; 
-        
-        using (Aes aesAlg = Aes.Create())
+        if (string.IsNullOrEmpty(plainText)) return string.Empty;
+
+        using (var aesAlg = Aes.Create())
         {
             aesAlg.Key = Key;
             aesAlg.IV = IV;
 
-            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+            var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
-            using (var msEncrypt = new System.IO.MemoryStream())
+            using (var msEncrypt = new MemoryStream())
             {
                 using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                 {
-                    using (var swEncrypt = new System.IO.StreamWriter(csEncrypt))
+                    using (var swEncrypt = new StreamWriter(csEncrypt))
                     {
                         swEncrypt.Write(plainText);
                     }
+
                     return Convert.ToBase64String(msEncrypt.ToArray());
                 }
             }
@@ -49,20 +58,20 @@ public partial class Note : ObservableObject
 
     private string Decrypt(string encryptedText)
     {
-        if (string.IsNullOrEmpty(encryptedText)) return string.Empty; 
+        if (string.IsNullOrEmpty(encryptedText)) return string.Empty;
 
-        using (Aes aesAlg = Aes.Create())
+        using (var aesAlg = Aes.Create())
         {
             aesAlg.Key = Key;
             aesAlg.IV = IV;
 
-            ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+            var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
-            using (var msDecrypt = new System.IO.MemoryStream(Convert.FromBase64String(encryptedText)))
+            using (var msDecrypt = new MemoryStream(Convert.FromBase64String(encryptedText)))
             {
                 using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                 {
-                    using (var srDecrypt = new System.IO.StreamReader(csDecrypt))
+                    using (var srDecrypt = new StreamReader(csDecrypt))
                     {
                         return srDecrypt.ReadToEnd();
                     }
@@ -70,7 +79,4 @@ public partial class Note : ObservableObject
             }
         }
     }
-
-    [ObservableProperty] private DateTime _createdAt = DateTime.UtcNow;
-    [ObservableProperty] private DateTime _updatedAt = DateTime.UtcNow;
 }
