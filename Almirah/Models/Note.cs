@@ -15,6 +15,21 @@ public partial class Note : ObservableObject
     [ObservableProperty] private DateTime _createdAt = DateTime.UtcNow;
     [ObservableProperty] private DateTime _updatedAt = DateTime.UtcNow;
 
+    private static byte[] Key = new byte[32];
+    private static byte[] IV = new byte[16];
+
+    public Note()
+    {
+        // var config = File.ReadAllText("appsettings.json");
+        // var appConfig = JsonSerializer.Deserialize<Encryption>(config);
+
+        var appConfig = new Encryption();
+        appConfig.Key = Encoding.UTF8.GetBytes("YourFixedSecretKey12345678901234");
+        appConfig.IV = Encoding.UTF8.GetBytes("YourIV1234567890");
+        Key = appConfig.Key;
+        IV = appConfig.IV;
+    }
+
     public string Content
     {
         get => Decrypt(_encryptedContent);
@@ -24,11 +39,6 @@ public partial class Note : ObservableObject
             OnPropertyChanged();
         }
     }
-
-    private static readonly byte[]
-        Key = Encoding.UTF8.GetBytes("YourFixedSecretKey12345678901234"); // Check if exactly 32 bytes
-
-    private static readonly byte[] IV = Encoding.UTF8.GetBytes("YourIV1234567890"); // 16 bytes for AES IV.
 
     private string Encrypt(string plainText)
     {

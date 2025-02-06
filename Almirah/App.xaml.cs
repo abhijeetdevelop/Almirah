@@ -5,6 +5,6 @@ public partial class App : Application
     public App(AppShell shell)
     {
         InitializeComponent();
-        MainPage = shell; // Set AppShell as the main page
+        MainPage = shell;
     }
 }

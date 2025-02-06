@@ -1,7 +1,10 @@
-﻿using Almirah.Models;
+﻿using System.Reflection;
+using System.Text.Json;
+using Almirah.Models;
 using Almirah.Services.Interfaces;
 using Almirah.ViewModels.Notes;
 using Almirah.Views.Notes;
+using Microsoft.Extensions.Configuration;
 using MainPage = Almirah.Views.Notes.MainPage;
 
 namespace Almirah;

@@ -84,18 +84,6 @@ public class MainPageVM : BindableObject
         }
     }
 
-    private async Task AuthenticateUser()
-    {
-        var isAuthenticated = await _authService.AuthenticateAsync();
-
-        if (isAuthenticated)
-            // Proceed to the main content of the app
-            Console.WriteLine("User authenticated successfully!");
-        else
-            // Handle the case where authentication failed
-            Console.WriteLine("Authentication failed.");
-    }
-
     private async Task OpenNoteAsync(Note selectedNote)
     {
         if (selectedNote == null) return; // Add null check for safety
@@ -134,7 +122,6 @@ public class MainPageVM : BindableObject
 
     public async Task OnAppearing()
     {
-        await AuthenticateUser();
         await LoadNotesAsync();
     }
 }

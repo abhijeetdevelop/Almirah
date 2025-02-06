@@ -1,19 +1,20 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Almirah.Services.Interfaces;
 using Almirah.ViewModels.Notes;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.Authentication;
 
 namespace Almirah.Views.Notes;
 
 public partial class MainPage : ContentPage
 {
-    public MainPage(MainPageVM vm)
+    private readonly IAuthService _authService;
+
+    public MainPage(MainPageVM vm, IAuthService authService)
     {
         try
         {
             InitializeComponent();
+            _authService = authService;
+
+            _ = AuthenticateAndInitialize();
             BindingContext = vm;
         }
         catch (Exception ex)
@@ -21,6 +22,15 @@ public partial class MainPage : ContentPage
             Console.WriteLine($"Exception: {ex.Message}");
             throw;
         }   
+    }
+    
+    private async Task AuthenticateAndInitialize()
+    {
+        bool isAuthenticated = await _authService.AuthenticateAsync();
+        if (!isAuthenticated)
+        {            
+            Environment.Exit(0);
+        }
     }
     
     protected override async void OnAppearing()
