@@ -2,28 +2,28 @@ using SQLite;
 using Almirah.Models;
 using Almirah.Services.Interfaces;
 
+namespace Almirah.Services.Notes;
+
 public class DatabaseService : IDatabaseService
 {
     private readonly SQLiteAsyncConnection _database;
+    private readonly IEncryptionService _encryptionService;
 
-    public DatabaseService()
-    {
-    }
-
-    public DatabaseService(string dbPath)
+    public DatabaseService(string dbPath, IEncryptionService encryptionService)
     {
         _database = new SQLiteAsyncConnection(dbPath);
+        _encryptionService = encryptionService;
         _database.CreateTableAsync<Note>().Wait();
     }
 
-    public Task<List<Note>> GetNotesAsync()
+    public async Task<List<Note>> GetNotesAsync()
     {
-        return _database.Table<Note>().ToListAsync();
-    }
-
-    public Task<Note> GetNoteAsync(int id)
-    {
-        return _database.Table<Note>().Where(n => n.Id == id).FirstOrDefaultAsync();
+        var notes = await _database.Table<Note>().ToListAsync();
+        foreach (var note in notes)
+        {
+            note.InitializeEncryptionService(_encryptionService);
+        }
+        return notes;
     }
 
     public Task<int> SaveNoteAsync(Note note)

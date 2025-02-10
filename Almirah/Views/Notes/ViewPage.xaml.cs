@@ -17,9 +17,9 @@ public partial class ViewPage : ContentPage
             _note = value;
 
             // Set the SelectedNote in the ViewModel to the passed Note
-            if (BindingContext is ViewVM vm && _note != null)
+            if (BindingContext is ViewVM vm)
             {
-                vm.SelectedNote = _note;
+                vm.SelectedNote = _note ?? new Note();
             }
         }
     }

@@ -8,8 +8,7 @@
     Shell.FlyoutBehavior="Disabled">
 
     <TabBar>
-    <ShellContent Route="MainPage" ContentTemplate="{DataTemplate notes:MainPage}" />
-    
-    <ShellContent Route="ViewPage" ContentTemplate="{DataTemplate notes:ViewPage}" />
+        <ShellContent Route="MainPage" ContentTemplate="{DataTemplate notes:MainPage}" />
+        <ShellContent Route="ViewPage" ContentTemplate="{DataTemplate notes:ViewPage}" />
     </TabBar>
-</Shell>    
+</Shell>

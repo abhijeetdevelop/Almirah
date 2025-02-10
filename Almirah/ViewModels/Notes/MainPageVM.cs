@@ -3,19 +3,16 @@ using Almirah.Models;
 using Almirah.Services.Interfaces;
 using Almirah.Views.Notes;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Configuration;
 
 namespace Almirah.ViewModels.Notes;
 
 public class MainPageVM : BindableObject
 {
     private readonly IDatabaseService _databaseService;
-    private readonly IAuthService _authService;
-
     public ObservableCollection<Note> Notes { get; } = new();
 
-
     private Note _selectedNote;
-
     public Note SelectedNote
     {
         get => _selectedNote;
@@ -29,7 +26,6 @@ public class MainPageVM : BindableObject
     }
 
     private ObservableCollection<Note> _filteredNotes;
-
     public ObservableCollection<Note> FilteredNotes
     {
         get => _filteredNotes;
@@ -57,10 +53,9 @@ public class MainPageVM : BindableObject
     public IAsyncRelayCommand AddNoteCommand { get; }
     public IAsyncRelayCommand DeleteNoteCommand { get; }
 
-    public MainPageVM(IDatabaseService databaseService, IAuthService authService)
+    public MainPageVM(IDatabaseService databaseService)
     {
         _databaseService = databaseService;
-        _authService = authService;
 
         LoadNotesCommand = new AsyncRelayCommand(LoadNotesAsync);
         DeleteNoteCommand = new AsyncRelayCommand<Note>(DeleteNoteAsync);
@@ -97,11 +92,9 @@ public class MainPageVM : BindableObject
 
     private async Task AddNoteAsync()
     {
-        // Navigate to the NoteDetailPage with a new note
-        var newNote = new Note();
         await Shell.Current.GoToAsync($"//{nameof(ViewPage)}", new Dictionary<string, object>
         {
-            ["note"] = newNote
+            ["note"] = null
         });
     }
 
